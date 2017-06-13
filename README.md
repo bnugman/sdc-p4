@@ -48,6 +48,10 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 ![original][test1]
 ![undistorted][test1_undist]
 
+The result seems dubious to me. When I apply the same approach to the calibration images themselves, the result looks good, but it seems that the calibration images and the test images do not come from the same camera, or perhaps shot with different settings. In addition, some of the calibration images inexplicably have a different resolution, e.g. calibration7.jpg resolution is 1281x721, whereas previous images are in the 1280x720 resolution.
+
+All the more reason to keep the pipeline modular and decoupled.
+
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
