@@ -17,12 +17,14 @@ The goals / steps of this project are the following:
 
 [corners]: ./output_images/corners1.jpg "With corners shown"
 [undist]: ./output_images/calibration_undist1.jpg "Undistorted"
-[test1]: ./test_images/test3.jpg "Road Image Test 1"
-[test1_undist]: ./output_images/undist_test3.jpg "Road Image Test 1 Undistorted"
+[test]: ./test_images/test3.jpg "Road Image Test 1"
+[test_undist]: ./output_images/undist_test3.jpg "Road Image Test 1 Undistorted"
 
 [test_magic]: ./output_images/magic_test3.jpg "Road Image Test 3 Channel mix"
 [test_edgy]: ./output_images/edgy_test3.jpg "Road Image Test 3 Binarized"
-[test_edgy_unwrap]: ./output_images/edgy_unwrap_test3.jpg "Road Image Test 3 Binarized, No persepctive"
+[test_edgy_unwrap]: ./output_images/edgy_unwarp_test3.jpg "Road Image Test 3 Binarized, No persepctive"
+
+[lane_fit]: ./output_images/lane_test3.jpg "Road Image Test 3 Lane fit"
 
 [de_perspect]: ./output_images/de_perspect_straight_lines1.jpg "Perspective removed"
 
@@ -58,12 +60,12 @@ Undistorted calibration image:
 #### 1. Provide an example of a distortion-corrected image.
 
 Original:
-![original][test1]
+![original][test]
 
 Undistorted:
-![undistorted][test1_undist]
+![undistorted][test_undist]
 
-The result seems dubious to me, but seems to work. When I apply the same approach to the calibration images themselves, the result looks good, but it seems that the calibration images and the test images do not come from the same camera, or perhaps shot with different settings. In addition, some of the calibration images inexplicably have a different resolution, e.g. calibration7.jpg resolution is 1281x721, whereas previous images are in the 1280x720 resolution.
+The result may seem dubious, but seems to work. When I apply the same approach to the calibration images themselves, the result looks good, but it seems that the calibration images and the test images do not come from the same camera, or perhaps shot with different settings. In addition, some of the calibration images inexplicably have a different resolution, e.g. calibration7.jpg resolution is 1281x721, whereas previous images are in the 1280x720 resolution.
 
 All the more reason to keep the pipeline modular and decoupled.
 
@@ -107,13 +109,17 @@ And this is how the previously shown binarized image looks with perspective remo
 ![binarized no perspective][test_edgy_unwrap]
 
 
-#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+#### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial
 
-TODO: explain how The find_and_fit_poly() does that
+The function find_and_fit_poly() searches for the lane curves in the following manner:
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+- build a histogram of the lower half of the image along the X axis
+- identify the peaks of the histograms to the left and to the right of the midpoint; these are the "seeds" of our lane search
+- use sliding windows to identify the nonzero pixels in the contigious area, adjust window position as the lanes shift
+- finally, fit a polynomial of the specified degree to the pixels of the both lanes
 
-![alt text][image5]
+Resulting fitted curves look like this:
+![lane fit][lane_fit]
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
