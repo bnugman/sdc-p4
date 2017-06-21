@@ -25,6 +25,8 @@ The goals / steps of this project are the following:
 [test_edgy_unwrap]: ./output_images/edgy_unwarp_test3.jpg "Road Image Test 3 Binarized, No persepctive"
 
 [lane_fit]: ./output_images/lane_test3.jpg "Road Image Test 3 Lane fit"
+[blended]: ./output_images/blended_test3.jpg "Road Image Test 3 Blended"
+
 
 [de_perspect]: ./output_images/de_perspect_straight_lines1.jpg "Perspective removed"
 
@@ -123,13 +125,16 @@ Resulting fitted curves look like this:
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+curvature_and_shift_calc() calculates the radius of the curves, as well as the deviation of the midpoint between found lane curves and the midpoint of the picture.
+
+Both the radius and the deviation from center are calculated in meters. One missing piece of the puzzle is how close the camera is mounted to the centerline of the vehicle. Judging from where the deviation values are centerd, the camera is mounted about 30cm to the left of the centerline, i.e. not far from where the drivers vantage point.
+
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I apply inverse perspective tranform to the image of fitted lanes and then blend the resulting image with the original, like so:
 
-![alt text][image6]
+![blended][blended]
 
 ---
 
