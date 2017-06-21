@@ -46,7 +46,10 @@ The goals / steps of this project are the following:
 
 The code for this step is contained in the first code cell of the IPython notebook located in "LaneFinder.ipynb"
 
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.
+Html export of same notebook is in LaneFinder.html.
+
+
+I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result:
 
@@ -75,7 +78,7 @@ All the more reason to keep the pipeline modular and decoupled.
 
 I used a combination of color and gradient thresholds to generate a binary image.
 
-First, magic_channel() function combines saturation and red channels in a peculiar way (see code. If I were to be completely honest, saturation channel alone works about as well, but blending saturation and red channels seemed cooler.)
+At first, magic_channel() combined saturation and red channels in a peculiar way, but later I've opted to just using the saturation channel.
 
 The resulting images show lanes prominently:
 
@@ -144,10 +147,17 @@ I apply inverse perspective tranform to the image of fitted lanes and then blend
 
 Here's a [link to my video result](./project_video_out.mp4)
 
+Or see it on youtube: https://youtu.be/s14fg2_5LaY
 ---
 
 ### Discussion
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.
+The main improvement I can think of is to actively use previously detected lanes in detection of the lanes in the subsequent frames. There's a drawback to this approach as well: if lanes disappear altogether, the algorithm may still be producing output from previous frames, and that may be undesirable.
+
+In some situations, lane markings can be undetectable even by the most sophisticated algorithm (e.g. multiple markings are visible or markings completely missing). In such cases, the algorithm should be able to provide a condfident negative.
+
+A partial application of this approach can detect a single lane reliably, while refusing to detect both lanes (e.g. when one lane's markings are too sparse), thus still providing value of single lane detection.
+
+A big drawback of the current algorithm is its reliance on the notion of flat surface to go from perspective image to top-view image. More realistically, we could use map information along with location and direction information to more accurately anticipate the geometry of the road.
