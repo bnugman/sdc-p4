@@ -17,8 +17,8 @@ The goals / steps of this project are the following:
 
 [corners]: ./output_images/corners1.jpg "With corners shown"
 [undist]: ./output_images/calibration_undist1.jpg "Undistorted"
-[test1]: ./test_images/test1.jpg "Road Image Test 1"
-[test1_undist]: ./output_images/undist_test1.jpg "Road Image Test 1 Undistorted"
+[test1]: ./test_images/test3.jpg "Road Image Test 1"
+[test1_undist]: ./output_images/undist_test3.jpg "Road Image Test 1 Undistorted"
 
 [test_magic]: ./output_images/magic_test3.jpg "Road Image Test 3 Channel mix"
 [test_edgy]: ./output_images/edgy_test3.jpg "Road Image Test 3 Binarized"
