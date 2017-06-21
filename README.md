@@ -130,7 +130,9 @@ Resulting fitted curves look like this:
 
 curvature_and_shift_calc() calculates the radius of the curves, as well as the deviation of the midpoint between found lane curves and the midpoint of the picture.
 
-Both the radius and the deviation from center are calculated in meters. One missing piece of the puzzle is how close the camera is mounted to the centerline of the vehicle. Judging from where the deviation values are centerd, the camera is mounted about 30cm to the left of the centerline, i.e. not far from where the drivers vantage point.
+Both the radius and the deviation from center are calculated in meters.
+
+Typical curvature radii measure in hundreds of meters, while the deviation from the center is in the vicinity of 30cm.
 
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
