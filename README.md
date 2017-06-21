@@ -20,12 +20,13 @@ The goals / steps of this project are the following:
 [test1]: ./test_images/test1.jpg "Road Image Test 1"
 [test1_undist]: ./output_images/undist_test1.jpg "Road Image Test 1 Undistorted"
 
+[test_magic]: ./output_images/magic_test3.jpg "Road Image Test 3 Channel mix"
+[test_edgy]: ./output_images/edgy_test3.jpg "Road Image Test 3 Binarized"
+[test_edgy_unwrap]: ./output_images/edgy_unwrap_test3.jpg "Road Image Test 3 Binarized, No persepctive"
 
-[image3]: ./examples/binary_combo_example.jpg "Binary Example"
-[image4]: ./examples/warped_straight_lines.jpg "Warp Example"
-[image5]: ./examples/color_fit_lines.jpg "Fit Visual"
-[image6]: ./examples/example_output.jpg "Output"
-[video1]: ./project_video.mp4 "Video"
+[de_perspect]: ./output_images/de_perspect_straight_lines1.jpg "Perspective removed"
+
+
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
@@ -45,57 +46,70 @@ I start by preparing "object points", which will be the (x, y, z) coordinates of
 
 I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result:
 
-![original][test1]
-![undistorted][test1_undist]
+Distorted calibration image with corners identified:
+![Distorted calibration image with corners][corners]
 
-The result seems dubious to me. When I apply the same approach to the calibration images themselves, the result looks good, but it seems that the calibration images and the test images do not come from the same camera, or perhaps shot with different settings. In addition, some of the calibration images inexplicably have a different resolution, e.g. calibration7.jpg resolution is 1281x721, whereas previous images are in the 1280x720 resolution.
+Undistorted calibration image:
+![Undistorted][undist]
 
-All the more reason to keep the pipeline modular and decoupled.
 
 ### Pipeline (single images)
 
 #### 1. Provide an example of a distortion-corrected image.
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
-![alt text][image2]
+Original:
+![original][test1]
+
+Undistorted:
+![undistorted][test1_undist]
+
+The result seems dubious to me, but seems to work. When I apply the same approach to the calibration images themselves, the result looks good, but it seems that the calibration images and the test images do not come from the same camera, or perhaps shot with different settings. In addition, some of the calibration images inexplicably have a different resolution, e.g. calibration7.jpg resolution is 1281x721, whereas previous images are in the 1280x720 resolution.
+
+All the more reason to keep the pipeline modular and decoupled.
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+I used a combination of color and gradient thresholds to generate a binary image.
 
-![alt text][image3]
+First, magic_channel() function combines saturation and red channels in a peculiar way (see code. If I were to be completely honest, saturation channel alone works about as well, but blending saturation and red channels seemed cooler.)
+
+The resulting images show lanes prominently:
+
+![channelized][test_magic]
+
+I then apply Sobel transform in function edgify() with harcoded (but carefully chosen) thresholds of 30 and 200 to binarize the image.
+
+The resulting binary image looks like this:
+
+![binarized][test_edgy]
+
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The functions related to perspective transforms are:
 
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
+trapezoid() -- returns the trapezoid shape mimicking the perspective view of lanes derived from one of the undistorted images of straight lanes.
 
-This resulted in the following source and destination points:
+trapezoid_dst() -- returns a rectangular shape that we wish to "unwrap" the perspective view into
 
-| Source        | Destination   |
-|:-------------:|:-------------:|
-| 585, 460      | 320, 0        |
-| 203, 720      | 320, 720      |
-| 1127, 720     | 960, 720      |
-| 695, 460      | 960, 0        |
+make_perspective_transform() -- returns the perspective transformation from trapezoid() shape into trapezoid_dst() shape
+
+make_inv_perspective_transform() -- the inverse of the above
+
+de_perspect() -- applies a perspective transformation
 
 I verified that my perspective transform was working as expected by drawing the `src` and `dst` points onto a test image and its warped counterpart to verify that the lines appear parallel in the warped image.
 
-![alt text][image4]
+![perspective removed for image of straight lanes][de_perspect]
+
+And this is how the previously shown binarized image looks with perspective removed:
+
+![binarized no perspective][test_edgy_unwrap]
+
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
+
+TODO: explain how The find_and_fit_poly() does that
 
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
