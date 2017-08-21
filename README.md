@@ -149,7 +149,7 @@ I apply inverse perspective tranform to the image of fitted lanes and then blend
 
 Here's a [link to my video result](./project_video_out.mp4)
 
-Or see it on youtube: https://youtu.be/s14fg2_5LaY
+Or see it on youtube: https://youtu.be/nbIN617-GwA
 ---
 
 ### Discussion
